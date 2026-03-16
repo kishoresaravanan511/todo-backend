@@ -9,21 +9,37 @@ import java.util.List;
 @Service
 public class TodoService {
 
-    private final TodoRepository repo;
+    private final TodoRepository repository;
 
-    public TodoService(TodoRepository repo) {
-        this.repo = repo;
+    public TodoService(TodoRepository repository) {
+        this.repository = repository;
     }
 
+    // GET ALL TODOS
     public List<Todo> getAllTodos() {
-        return repo.findAll();
+        return repository.findAll();
     }
 
+    // CREATE TODO
     public Todo createTodo(Todo todo) {
-        return repo.save(todo);
+        return repository.save(todo);
     }
 
+    // UPDATE TODO
+    public Todo updateTodo(Long id, Todo todo) {
+
+        Todo existing = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Todo not found"));
+
+        existing.setTitle(todo.getTitle());
+        existing.setDescription(todo.getDescription());
+        existing.setCompleted(todo.isCompleted());
+
+        return repository.save(existing);
+    }
+
+    // DELETE TODO
     public void deleteTodo(Long id) {
-        repo.deleteById(id);
+        repository.deleteById(id);
     }
 }
